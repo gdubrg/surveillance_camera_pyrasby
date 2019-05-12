@@ -3,6 +3,16 @@ import yaml
 import os
 from os.path import join
 from datetime import datetime
+import time
+import threading
+
+
+def threaded(fn):
+    def wrapper(*args, **kwargs):
+        thread = threading.Thread(target=fn, args=args, kwargs=kwargs)
+        thread.start()
+        return thread
+    return wrapper
 
 
 class Camera:
@@ -13,6 +23,7 @@ class Camera:
         self.frame = None
         self.video = None
         self.motion_detected = 1
+        self.running = 1
 
         # settings
         if not os.path.exists("settings.yaml"):
@@ -25,6 +36,9 @@ class Camera:
         self.motion_detection_flag = config["motion detection"]
         self.min_area_motion = config["min area detected"]
 
+        # fps
+        self.time_to_wait = 1. / self.fps
+
         # outputs
         self.output_frame_path = "frame_" + str(index)
         if not os.path.exists(self.output_frame_path):
@@ -35,7 +49,7 @@ class Camera:
             self.video_limit = (2000000000/75000)*7
 
         # video
-        self.open_new_video()
+        # self.open_new_video()
 
         # open camera
         print("Starting camera connected on {}...".format(index))
@@ -96,10 +110,36 @@ class Camera:
             if cv2.contourArea(contour) < self.min_area_motion:
                 continue
             motion = 1
+            break
             # (x, y, w, h) = cv2.boundingRect(contour)
             # # making green rectangle arround the moving object
             # cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 3)
         self.old_frame = self.frame.copy()
         return motion
+
+    @threaded
+    def run(self):
+        self.running = 1
+        self.open_new_video()
+
+        while self.running:
+            # for fps
+            start_time = time.time()
+
+            # camera stuff
+            self.acquire_frame()
+            self.visualize_current_frame()
+            self.save_current_frame()
+            self.save_current_frame_video()
+
+            # fps check
+            elapsed_time = time.time() - start_time
+            if self.time_to_wait - elapsed_time > 0:
+                time.sleep(self.time_to_wait - elapsed_time)
+
+    def stop(self):
+        self.running = 0
+        self.close_video()
+        cv2.destroyAllWindows()
 
 

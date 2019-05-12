@@ -23,26 +23,36 @@ def sample_camera():
 
     # fps
     fps = config["fps"]
-    time_to_wait = 1./fps
-    c = 0
+    # time_to_wait = 1./fps
+    # c = 0
 
-    while c < 100:
+    # while c < 10000:
 
-        c += 1
-        start_time = time.time()
+        # c += 1
+        # start_time = time.time()
 
         # camera stuff
-        cam.acquire_frame()
-        cam.visualize_current_frame()
-        cam.save_current_frame()
-        cam.save_current_frame_video()
+        # cam.acquire_frame()
+        # cam.visualize_current_frame()
+        # cam.save_current_frame()
+        # cam.save_current_frame_video()
 
-        elapsed_time = time.time() - start_time
-        if time_to_wait - elapsed_time > 0:
-            time.sleep(time_to_wait - elapsed_time)
+        # elapsed_time = time.time() - start_time
+        # if time_to_wait - elapsed_time > 0:
+        #     time.sleep(time_to_wait - elapsed_time)
 
-    cam.close_video()
+    # cam.close_video()
+
+    cam.run()
+    time.sleep(2)
+    print("Shutting down...")
+    cam.stop()
+    time.sleep(2)
+    print("Restarting...")
+    cam.run()
+
 
 if __name__ == "__main__":
     sample_camera()
     # app.run()
+    # print("Ciao")
