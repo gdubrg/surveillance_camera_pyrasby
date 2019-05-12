@@ -41,7 +41,7 @@ def sample_camera():
         if time_to_wait - elapsed_time > 0:
             time.sleep(time_to_wait - elapsed_time)
 
-    cam.out.release()
+    cam.close_video()
 
 if __name__ == "__main__":
     sample_camera()

@@ -2,3 +2,5 @@ frames/*
 *.png
 *.jpg
 *.avi
+.idea/*
+*.xml

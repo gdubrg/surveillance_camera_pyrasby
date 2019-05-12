@@ -1,3 +1,5 @@
-resolution width: 1280
-resolution height: 720
+resolution width: 640
+resolution height: 480
 fps: 20
+motion detection: 1
+min area detected: 10000
