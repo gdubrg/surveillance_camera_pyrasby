@@ -7,7 +7,20 @@
 </head>
 
 <body>
-    <p>"Prova"</p>
+
+    <p>{{ status }}</p>
+
+{#    <ul>#}
+{#        {%  for l in llist %}#}
+{#            <li>{{ l }}</li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+
+    <form action="http://localhost:5000/ryta" method="post">
+{#        <input type="text" name="text" value="">#}
+        <input type="submit" name="action" value="start">
+        <input type="submit" name="action" value="stop">
+    </form>
 </body>
 
 </html>

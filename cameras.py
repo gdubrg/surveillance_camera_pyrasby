@@ -21,13 +21,17 @@ class Camera:
 
         # variables
         self.frame = None
+        self.old_frame = None
         self.video = None
         self.motion_detected = 1
-        self.running = 1
+        self.running = 0
+        self.cap = None
+
+        self.index = index
 
         # settings
         if not os.path.exists("settings.yaml"):
-            print("Error: settings file not found!")
+            print("Error: settings file not found!!")
             exit()
         config = yaml.load(open("settings.yaml"))
         self.frame_w = config["resolution width"]
@@ -35,6 +39,8 @@ class Camera:
         self.fps = config["fps"]
         self.motion_detection_flag = config["motion detection"]
         self.min_area_motion = config["min area detected"]
+        self.save_frames_flag = config["save single frames"]
+        self.save_video_flag = config["save video"]
 
         # fps
         self.time_to_wait = 1. / self.fps
@@ -52,8 +58,13 @@ class Camera:
         # self.open_new_video()
 
         # open camera
-        print("Starting camera connected on {}...".format(index))
-        self.cap = cv2.VideoCapture(index)
+        # self.open_camera()
+
+        self.th()
+
+    def open_camera(self):
+        print("Starting camera connected on {}...".format(self.index))
+        self.cap = cv2.VideoCapture(self.index)
         ret, self.old_frame = self.cap.read()
         self.old_frame = cv2.resize(self.old_frame, dsize=(self.frame_w, self.frame_h))
         self.old_frame = cv2.cvtColor(self.old_frame, cv2.COLOR_BGR2GRAY)
@@ -90,6 +101,7 @@ class Camera:
 
     def close_video(self):
         self.video.release()
+        self.cap.release()
 
     def get_date(self):
         return datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f')
@@ -118,28 +130,38 @@ class Camera:
         return motion
 
     @threaded
+    def th(self):
+        while True:
+            while not self.running:
+                time.sleep(0.5)
+
+            self.open_camera()
+            self.open_new_video()
+
+            while self.running:
+                # for fps
+                start_time = time.time()
+
+                # camera stuff
+                self.acquire_frame()
+                self.visualize_current_frame()
+                if self.save_frames_flag:
+                    self.save_current_frame()
+                if self.save_video_flag:
+                    self.save_current_frame_video()
+
+                # fps check
+                elapsed_time = time.time() - start_time
+                if self.time_to_wait - elapsed_time > 0:
+                    time.sleep(self.time_to_wait - elapsed_time)
+
+            cv2.destroyAllWindows()
+
     def run(self):
         self.running = 1
-        self.open_new_video()
-
-        while self.running:
-            # for fps
-            start_time = time.time()
-
-            # camera stuff
-            self.acquire_frame()
-            self.visualize_current_frame()
-            self.save_current_frame()
-            self.save_current_frame_video()
-
-            # fps check
-            elapsed_time = time.time() - start_time
-            if self.time_to_wait - elapsed_time > 0:
-                time.sleep(self.time_to_wait - elapsed_time)
 
     def stop(self):
         self.running = 0
         self.close_video()
-        cv2.destroyAllWindows()
 
 

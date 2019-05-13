@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from cameras import Camera
 import yaml
 import os
@@ -6,10 +6,36 @@ import time
 
 app = Flask(__name__)
 
+camera = Camera(0)
 
-@app.route("/")
+
+@app.route("/", methods=['GET', 'POST'])
 def main():
     return render_template("index.html")
+
+
+@app.route("/ryta", methods=['GET', 'POST'])
+def ryta():
+    print('debug')
+    if request.method == 'POST':
+        if request.form['action'] == 'start':
+            handle_camera('start')
+            status = "start"
+        elif request.form['action'] == 'stop':
+            handle_camera('stop')
+            status = "stop"
+        else:
+            return "Not defined"
+    l = ['a', 'b']
+    # return render_template("index.html", status=status, llist=l)
+    return render_template("index.html", status=status)
+
+
+def handle_camera(action):
+    if action == 'start':
+        camera.run()
+    elif action == 'stop':
+        camera.stop()
 
 
 def sample_camera():
@@ -53,6 +79,5 @@ def sample_camera():
 
 
 if __name__ == "__main__":
-    sample_camera()
-    # app.run()
-    # print("Ciao")
+    # sample_camera()
+    app.run()

@@ -4,3 +4,5 @@ frames/*
 *.avi
 .idea/*
 *.xml
+*.iml
+*.pyc
