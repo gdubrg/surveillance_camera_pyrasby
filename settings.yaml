@@ -2,6 +2,6 @@ resolution width: 640
 resolution height: 480
 fps: 24
 save single frames: 0
-save video: 1
+save video: 0
 motion detection: 0
 min area detected: 10000

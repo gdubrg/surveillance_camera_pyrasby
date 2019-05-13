@@ -9,13 +9,13 @@ app = Flask(__name__)
 camera = Camera(0)
 
 
-@app.route("/", methods=['GET', 'POST'])
+@app.route("/")
 def main():
     return render_template("index.html")
 
 
-@app.route("/ryta", methods=['GET', 'POST'])
-def ryta():
+@app.route("/button_action", methods=['GET', 'POST'])
+def button_action():
     print('debug')
     if request.method == 'POST':
         if request.form['action'] == 'start':
@@ -80,4 +80,5 @@ def sample_camera():
 
 if __name__ == "__main__":
     # sample_camera()
-    app.run()
+    # app.run(host="192.168.1.9", port=5000)
+    app.run(port=5000)

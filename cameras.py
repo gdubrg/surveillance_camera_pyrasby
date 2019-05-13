@@ -133,7 +133,7 @@ class Camera:
     def th(self):
         while True:
             while not self.running:
-                time.sleep(0.5)
+                time.sleep(0.2)
 
             self.open_camera()
             self.open_new_video()

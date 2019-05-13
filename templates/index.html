@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../static/css/theme.css">
     <title>Webcamera server</title>
 </head>
 
@@ -16,11 +17,20 @@
 {#        {% endfor %}#}
 {#    </ul>#}
 
-    <form action="http://localhost:5000/ryta" method="post">
+    <form action="http://localhost:5000/button_action" method="post">
 {#        <input type="text" name="text" value="">#}
-        <input type="submit" name="action" value="start">
-        <input type="submit" name="action" value="stop">
+
+        <div style="text-align:center;">
+            <input type="submit" name="action" value="start" class="search">
+        </div>
+
+        <div style="text-align:center;">
+            <input type="submit" name="action" value="stop">
+        </div>
+
     </form>
+    <p>Prova</p>
+<!--<button type="button" class="block">Block Button</button>-->
 </body>
 
 </html>
